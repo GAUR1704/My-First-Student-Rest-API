@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.prowings.entity.Student;
+import com.prowings.exception.StudentNotFoundException;
 
 @Repository
 public class StudentDaoImpl implements StudentDao {
@@ -83,8 +84,12 @@ public class StudentDaoImpl implements StudentDao {
 			e.printStackTrace();
 			if (txn != null)
 				txn.rollback();
+			throw e;
 		}
-		return res;
+		if(res != null)
+			return res;
+		else
+			throw new StudentNotFoundException(id);
 	}
 
 	@Override
@@ -124,7 +129,7 @@ public class StudentDaoImpl implements StudentDao {
 				return true;
 			} else {
 				System.out.println("Student with specified ID : " + id + " is not present in DB!!");
-				throw new RuntimeException("Student with specified ID is not present in DB!!");
+				throw new StudentNotFoundException(id);
 			}
 
 		} catch (Exception e) {
