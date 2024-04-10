@@ -8,11 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "com.prowings")
-public class MyWebConfig {
+public class MyWebConfig  implements WebMvcConfigurer{
 
 	public DriverManagerDataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
@@ -42,4 +44,11 @@ public class MyWebConfig {
 		props.put("hibernate.hbm2ddl.auto", "update");
 		return props;
 	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		
+		  registry.addInterceptor(new LoggingInterceptor()).addPathPatterns("/v1/*"); 	}
+	
+	
 }
